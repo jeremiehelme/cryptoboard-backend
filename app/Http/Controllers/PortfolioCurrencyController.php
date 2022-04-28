@@ -15,22 +15,19 @@ class PortfolioCurrencyController extends Controller
 
 
 
-    public static function currencies($exchanges)
+    public static function currencies($portfolio)
     {
-        foreach ($exchanges as $exchange) {
-            $items = PortfolioCurrency::where('exchange_id', $exchange->id)->get();
-            $currencies = [];
-            foreach ($items as $item) {
-                $currency = CurrencyController::by_id($item->currency_id);
-                if ($currency->count()) {
-                    $currency[0]->quantity = $item->quantity;
-                    unset($currency[0]->id);
-                    $currencies[] =  $currency[0];
-                }
-            };
-            $exchange->currencies = $currencies;
-        }
-        return $exchanges;
+
+        $currencies = [];
+        $items = PortfolioCurrency::where('portfolio_id', $portfolio->id)->get();
+        foreach ($items as $item) {
+            $currency = CurrencyController::by_id($item->currency_id);
+            if ($currency->count()) {
+                $currencies[] =  $currency[0];
+            }
+        };
+
+        return $currencies;
     }
 
 

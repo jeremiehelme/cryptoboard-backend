@@ -12,12 +12,17 @@ class PortfolioController extends Controller
     public function index()
     {
         $user = Auth::guard()->user();
-        return Portfolio::where('user_id', $user->id)->get();
+        $portfolios = Portfolio::where('user_id', $user->id)->get();
+        foreach ($portfolios as $portfolio) {
+            $portfolio->currencies = PortfolioCurrencyController::currencies($portfolio);
+        }
+
+        return $portfolios;
     }
 
-    public function show(Portfolio $exchange)
+    public function show(Portfolio $portfolio)
     {
-        return $exchange;
+        return $portfolio;
     }
 
     public function store(Request $request)
