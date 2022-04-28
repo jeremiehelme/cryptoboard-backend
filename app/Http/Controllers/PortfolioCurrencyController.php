@@ -3,15 +3,14 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Http\Controllers\CurrencyController;
-use App\Models\ExchangeCurrency;
-use App\Models\Exchange;
+use App\Models\PortfolioCurrency;
 
-class ProtfolioCurrencyController extends Controller
+
+class PortfolioCurrencyController extends Controller
 {
     public function index()
     {
-        return ExchangeCurrency::all();
+        return PortfolioCurrency::all();
     }
 
 
@@ -19,7 +18,7 @@ class ProtfolioCurrencyController extends Controller
     public static function currencies($exchanges)
     {
         foreach ($exchanges as $exchange) {
-            $items = ExchangeCurrency::where('exchange_id', $exchange->id)->get();
+            $items = PortfolioCurrency::where('exchange_id', $exchange->id)->get();
             $currencies = [];
             foreach ($items as $item) {
                 $currency = CurrencyController::by_id($item->currency_id);
@@ -36,31 +35,49 @@ class ProtfolioCurrencyController extends Controller
 
 
 
+    public static function create($portfolio, $currency)
+    {
+        $portfolioCurrency =
+            PortfolioCurrency::where([
+                ['portfolio_id', $portfolio->id],
+                ['currency_id', $currency->id]
+            ])->get();
+
+        if ($portfolioCurrency->count() === 0) {
+            $portfolioCurrency = PortfolioCurrency::create([
+                'portfolio_id' => $portfolio->id,
+                'currency_id' => $currency->id
+            ]);
+        }
+
+        return response()->json($portfolioCurrency, 201);
+    }
+
     public function store(Request $request)
     {
-        $exchangeCurrency =
-            ExchangeCurrency::where([
-                ['exchange_id', $request['exchange_id']],
+        $portfolioCurrency =
+            PortfolioCurrency::where([
+                ['portfolio_id', $request['portfolio_id']],
                 ['currency_id', $request['currency_id']]
             ])->get();
 
-        if ($exchangeCurrency->count() == 0) {
-            $exchangeCurrency = ExchangeCurrency::create($request->all());
+        if ($portfolioCurrency->count() === 0) {
+            $portfolioCurrency = PortfolioCurrency::create($request->all());
         }
 
-        return response()->json($exchangeCurrency, 201);
+        return response()->json($portfolioCurrency, 201);
     }
 
-    public function update(Request $request, ExchangeCurrency $exchangeCurrency)
+    public function update(Request $request, PortfolioCurrency $portfolioCurrency)
     {
-        $exchangeCurrency->update($request->all());
+        $portfolioCurrency->update($request->all());
 
-        return response()->json($exchangeCurrency, 200);
+        return response()->json($portfolioCurrency, 200);
     }
 
-    public function delete(ExchangeCurrency $exchangeCurrency)
+    public function delete(PortfolioCurrency $portfolioCurrency)
     {
-        $exchangeCurrency->delete();
+        $portfolioCurrency->delete();
 
         return response()->json(null, 204);
     }

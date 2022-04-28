@@ -11,7 +11,7 @@ class PortfolioCurrency extends Model
     /**
      * @var string $table
      */
-    protected $table = 'portfolio_currencies';
+    protected $table = 'portfolio_currency';
 
     /**
      * @var array $fillable

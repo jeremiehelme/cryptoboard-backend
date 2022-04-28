@@ -3,8 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Portfolio;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\PortfolioCurrencyController;
+use App\Models\Portfolio;
 
 class PortfolioController extends Controller
 {
@@ -21,11 +22,14 @@ class PortfolioController extends Controller
 
     public function store(Request $request)
     {
-        $user = Auth::guard()->user(); //TODO make sure user exists
         $portfolio = Portfolio::create($request->all());
 
         //lier les cryptos au portfolio
-        
+        $currencies = CurrencyController::by_symbols($request['currencies']);
+        foreach ($currencies as $currency) {
+            PortfolioCurrencyController::create($portfolio, $currency);
+        }
+
 
         return response()->json($portfolio, 201);
     }

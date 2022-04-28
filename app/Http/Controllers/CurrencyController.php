@@ -24,6 +24,11 @@ class CurrencyController extends Controller
         return Currency::whereIn("id", $ids)->get();
     }
 
+    public static function by_symbols($symbols)
+    {
+        return Currency::whereIn("symbol", $symbols)->get();
+    }
+
     public function show(Currency $currency)
     {
         return $currency;
