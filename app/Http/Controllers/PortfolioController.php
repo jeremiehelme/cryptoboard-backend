@@ -28,10 +28,10 @@ class PortfolioController extends Controller
     public function store(Request $request)
     {
         $portfolio = Portfolio::create($request->all());
-
         //lier les cryptos au portfolio
-        $currencies = CurrencyController::by_symbols($request['currencies']);
+        $currencies = CurrencyController::by_symbols(array_keys($request['currencies']));
         foreach ($currencies as $currency) {
+            $currency->quantity = $request['currencies'][$currency->symbol];
             PortfolioCurrencyController::create($portfolio, $currency);
         }
 

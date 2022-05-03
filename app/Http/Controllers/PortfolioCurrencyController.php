@@ -23,6 +23,7 @@ class PortfolioCurrencyController extends Controller
         foreach ($items as $item) {
             $currency = CurrencyController::by_id($item->currency_id);
             if ($currency->count()) {
+                $currency[0]->quantity = $item->quantity;
                 $currencies[] =  $currency[0];
             }
         };
@@ -43,7 +44,8 @@ class PortfolioCurrencyController extends Controller
         if ($portfolioCurrency->count() === 0) {
             $portfolioCurrency = PortfolioCurrency::create([
                 'portfolio_id' => $portfolio->id,
-                'currency_id' => $currency->id
+                'currency_id' => $currency->id,
+                'quantity' => $currency->quantity
             ]);
         }
 
