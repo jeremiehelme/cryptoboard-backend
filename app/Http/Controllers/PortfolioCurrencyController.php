@@ -74,9 +74,14 @@ class PortfolioCurrencyController extends Controller
         return response()->json($portfolioCurrency, 200);
     }
 
-    public function delete(PortfolioCurrency $portfolioCurrency)
+    public static function delete(int $id)
     {
-        $portfolioCurrency->delete();
+        $portfolioCurrencies = PortfolioCurrency::where([
+            ['portfolio_id', $id]
+        ])->get();
+        foreach ($portfolioCurrencies as $portfolioCurrency) {
+            $portfolioCurrency->delete();
+        }
 
         return response()->json(null, 204);
     }

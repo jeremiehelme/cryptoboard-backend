@@ -31,8 +31,10 @@ Route::middleware(['auth:sanctum'])->delete('exchange/{exchange}', [ExchangeCont
 
 
 Route::middleware(['auth:sanctum'])->get('portfolio', [PortfolioController::class, 'index']);
+Route::middleware(['auth:sanctum'])->get('portfolio/{id}', [PortfolioController::class, 'show']);
 Route::middleware(['auth:sanctum'])->post('portfolio', [PortfolioController::class, 'store']);
-Route::middleware(['auth:sanctum'])->delete('portfolio', [PortfolioController::class, 'delete']);
+Route::middleware(['auth:sanctum'])->post('portfolio/{id}', [PortfolioController::class, 'update']);
+Route::middleware(['auth:sanctum'])->delete('portfolio/{id}', [PortfolioController::class, 'delete']);
 
 
 Route::middleware(['auth:sanctum'])->get('currency', [CurrencyController::class, 'index']);
@@ -43,4 +45,3 @@ Route::middleware(['auth:sanctum'])->delete('currency/{currency}', [CurrencyCont
 Route::middleware(['auth:sanctum'])->get('exchange_currencies', [ExchangeCurrencyController::class, 'index']);
 Route::middleware(['auth:sanctum'])->post('exchange_currencies', [ExchangeCurrencyController::class, 'store']);
 Route::middleware(['auth:sanctum'])->delete('exchange_currencies/{exchange_currencies}', [ExchangeCurrencyController::class, 'delete']);
-

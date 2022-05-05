@@ -20,8 +20,10 @@ class PortfolioController extends Controller
         return $portfolios;
     }
 
-    public function show(Portfolio $portfolio)
+    public function show(int $id)
     {
+        $portfolio = Portfolio::find($id);
+        $portfolio->currencies = PortfolioCurrencyController::currencies($portfolio);
         return $portfolio;
     }
 
@@ -34,22 +36,28 @@ class PortfolioController extends Controller
             $currency->quantity = $request['currencies'][$currency->symbol];
             PortfolioCurrencyController::create($portfolio, $currency);
         }
-
-
         return response()->json($portfolio, 201);
     }
 
-    public function update(Request $request, Portfolio $portfolio)
+    public function update(Request $request, int $id)
     {
+        $portfolio = Portfolio::find($id);
         $portfolio->update($request->all());
-
+        //delete all PortfolioCurrency
+        PortfolioCurrencyController::delete($id);
+        //create PortfolioCurrency
+        $currencies = CurrencyController::by_symbols(array_keys($request['currencies']));
+        foreach ($currencies as $currency) {
+            $currency->quantity = $request['currencies'][$currency->symbol];
+            PortfolioCurrencyController::create($portfolio, $currency);
+        }
         return response()->json($portfolio, 200);
     }
 
-    public function delete(Portfolio $portfolio)
+    public function delete(int $id)
     {
+        $portfolio = Portfolio::find($id);
         $portfolio->delete();
-
         return response()->json(null, 204);
     }
 }
